@@ -4,6 +4,6 @@ request:
 response:
   statusCode: 200
   headers:
-control:
+# control:
   # crazy: true
-  delay: "30s"
+  # delay: "5s"

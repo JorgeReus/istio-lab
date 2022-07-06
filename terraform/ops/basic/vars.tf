@@ -12,8 +12,8 @@ variable "gateway-name" {
 
 variable "retry_config" {
   default = {
-    attempts = 10
-    perTryTimeout = "15s"
-    retryOn = "5xx"
+    attempts      = 15
+    perTryTimeout = "10s"
+    retryOn       = "5xx"
   }
 }

@@ -134,3 +134,23 @@ resource "kubernetes_manifest" "app_vs" {
     }
   }
 }
+
+resource "kubernetes_manifest" "destinationrule_httpbin" {
+  manifest = {
+    apiVersion = "networking.istio.io/v1beta1"
+    kind       = "DestinationRule"
+    metadata = {
+      name      = kubernetes_deployment.app.metadata.0.name
+      namespace = var.namespace_name
+    }
+    spec = {
+      host = "${var.app-name}.${var.namespace_name}.svc.cluster.local"
+      trafficPolicy = {
+        outlierDetection = {
+          consecutive5xxErrors = 10
+          baseEjectionTime     = "10s"
+        }
+      }
+    }
+  }
+}
