@@ -1,0 +1,56 @@
+version: '3'
+
+vars:
+  CLUSTER_NAME: istio-test
+  REGISTRY_PORT: 5050
+
+tasks:
+  create-cluster:
+    run: once
+    cmds:
+      - k3d cluster create {{.CLUSTER_NAME}} -a {{.NUM_WORKER_NODES}} --registry-create {{.CLUSTER_NAME}}-registry:0.0.0.0:{{.REGISTRY_PORT}} --k3s-arg "--no-deploy=traefik@server:*"
+    vars:
+      NUM_WORKER_NODES: 3
+
+  destroy-cluster:
+    cmds:
+      - k3d cluster delete {{.CLUSTER_NAME}}
+
+  install-istio:
+    dir: ./terraform/infra
+    cmds:
+      - terraform init
+      - terraform apply --auto-approve
+
+  uninstall-istio:
+    dir: ./terraform/infra
+    cmds:
+      - terraform destroy --auto-approve
+
+  configure-base:
+    deps: [install-istio]
+    dir: ./terraform/ops/base
+    cmds:
+      - terraform init
+      - terraform apply --auto-approve
+
+  unconfigure-base:
+    dir: ./terraform/ops/base
+    cmds:
+      - terraform destroy --auto-approve
+
+  setup:
+    cmds:
+      - task: create-cluster
+      - task: install-istio
+      - task: configure-base
+
+  cleanup:
+    cmds:
+      - task: unconfigure-base
+      - task: uninstall-istio
+      - task: destroy-cluster
+
+  get-istio-ip:
+    cmds:
+      - kubectl get svc istio-gateway -n istio-system -o jsonpath="{.status.loadBalancer.ingress[0].ip}"
