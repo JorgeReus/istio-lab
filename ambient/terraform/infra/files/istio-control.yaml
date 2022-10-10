@@ -1,0 +1,52 @@
+istiodRemote:
+  injectionURL: ""
+
+pilot:
+  autoscaleEnabled: true
+  autoscaleMax: 5
+  autoscaleMin: 1
+  configMap: true
+  cpu:
+    targetAverageUtilization: 80
+  enableProtocolSniffingForInbound: true
+  enableProtocolSniffingForOutbound: true
+  env:
+    ENABLE_AUTO_SNI: "true"
+    PILOT_ENABLE_INBOUND_PASSTHROUGH: "false"
+    VERIFY_CERTIFICATE_AT_CLIENT: "true"
+  image: pilot
+  keepaliveMaxServerConnectionAge: 30m
+  nodeSelector: {}
+  podLabels: {}
+  replicaCount: 1
+  traceSampling: 1
+
+telemetry:
+  enabled: false
+  v2:
+    enabled: false
+    metadataExchange:
+      wasmEnabled: false
+    prometheus:
+      enabled: true
+      wasmEnabled: false
+    stackdriver:
+      configOverride: {}
+      enabled: false
+      logging: false
+      monitoring: false
+      topology: false
+
+meshConfig:
+  ambientMesh:
+    mode: DEFAULT
+  defaultConfig:
+    proxyMetadata:
+      ISTIO_META_ENABLE_HBONE: "true"
+  defaultProviders:
+    metrics:
+      - prometheus
+  enablePrometheusMerge: true
+  extensionProviders:
+    - name: prometheus
+      prometheus: {}

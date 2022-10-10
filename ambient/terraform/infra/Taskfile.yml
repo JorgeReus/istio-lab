@@ -1,0 +1,15 @@
+version: "3"
+
+tasks:
+  terratest:
+    dir: ./tests
+    cmds:
+      - go test -v
+
+  apply:
+    cmds:
+      - terraform apply --auto-approve
+
+  destroy:
+    cmds:
+      - terraform destroy --auto-approve
