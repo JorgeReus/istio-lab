@@ -1,0 +1,23 @@
+version: "3"
+
+vars:
+  CLUSTER_NAME: ambient
+
+tasks:
+  cluster:create:
+    run: once
+    cmds:
+      - |
+        kind create cluster --config=- <<EOF
+        kind: Cluster
+        apiVersion: kind.x-k8s.io/v1alpha4
+        name: {{ .CLUSTER_NAME }}
+        nodes:
+        - role: control-plane
+        - role: worker
+        - role: worker
+        EOF
+
+  cluster:delete:
+    cmds:
+      - kind delete cluster -n {{ .CLUSTER_NAME }}
