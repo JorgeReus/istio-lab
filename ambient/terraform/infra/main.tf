@@ -1,5 +1,5 @@
 resource "kubernetes_namespace" "istio_system" {
-  depends_on = [helm_release.metallb]
+  # depends_on = [helm_release.metallb]
   metadata {
     name = "istio-system"
   }
@@ -57,7 +57,7 @@ resource "helm_release" "istio_cni" {
 resource "helm_release" "gateways" {
   depends_on = [
     helm_release.istio_cni,
-    kubectl_manifest.metallb_advertisement,
+    # kubectl_manifest.metallb_advertisement,
   ]
   name            = "istio-gateways"
   chart           = "${path.root}/istio-${var.istio_version}/manifests/charts/gateways/istio-ingress/"
