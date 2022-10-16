@@ -1,3 +1,4 @@
 .terraform/
 .task
 terraform.tfstate*
+istio-*/

@@ -1,0 +1,4 @@
+defaultRevision: ""
+base:
+  enableCRDTemplates: false
+  validationURL: ""

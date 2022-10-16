@@ -1,0 +1,43 @@
+version: "3"
+
+vars:
+  CLUSTER_NAME: ambient
+
+includes:
+  infra:
+    taskfile: ./terraform/infra/Taskfile.yml
+    dir: ./terraform/infra/
+
+  ops:
+    taskfile: ./terraform/ops/Taskfile.yml
+    dir: ./terraform/ops/
+
+tasks:
+  cluster:create:
+    run: once
+    cmds:
+      - |
+        kind create cluster --config=- <<EOF
+        kind: Cluster
+        apiVersion: kind.x-k8s.io/v1alpha4
+        name: {{ .CLUSTER_NAME }}
+        nodes:
+        - role: control-plane
+        - role: worker
+        - role: worker
+        EOF
+
+  cluster:delete:
+    cmds:
+      - kind delete cluster -n {{ .CLUSTER_NAME }}
+
+  e2e:
+    cmds:
+      - task: infra:apply
+      - task: infra:terratest
+      - task: ops:terratest
+
+  tearup:
+    cmds:
+      - task: infra:destroy
+      - task: cluster:delete
