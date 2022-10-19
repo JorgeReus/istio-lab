@@ -1,0 +1,23 @@
+kubeProxyReplacement: strict
+k8sServiceHost: ${k8s-svc-host}
+k8sServicePort: 6443
+hostServices:
+  enabled: false
+externalIPs:
+  enabled: true
+nodePort:
+  enabled: true
+hostPort:
+  enabled: true
+image:
+  pullPolicy: IfNotPresent
+ipam:
+  mode: kubernetes
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+    service:
+      type: LoadBalancer
